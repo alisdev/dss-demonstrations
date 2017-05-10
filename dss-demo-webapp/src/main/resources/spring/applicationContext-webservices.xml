@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:cxf="http://cxf.apache.org/core"
+      xsi:schemaLocation="
+http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="abstractLoggingInterceptor" class="eu.europa.esig.dss.web.service.logging.AbstractLoggingInterceptor" abstract="true">
+        <property name="prettyLogging" value="true" />
+        <property name="writePayload" value="false" />
+        <property name="limit" value="-1" />
+    </bean>
+
+    <bean id="loggingInInterceptor" class="eu.europa.esig.dss.web.service.logging.LoggingInInterceptor"
+        parent="abstractLoggingInterceptor" />
+    <bean id="loggingOutInterceptor" class="eu.europa.esig.dss.web.service.logging.LoggingOutInterceptor"
+        parent="abstractLoggingInterceptor" />
+
+	<cxf:bus>
+		<cxf:inInterceptors>
+			<ref bean="loggingInInterceptor" />
+		</cxf:inInterceptors>
+		<cxf:outInterceptors>
+			<ref bean="loggingOutInterceptor" />
+		</cxf:outInterceptors>
+		<cxf:inFaultInterceptors>
+			<ref bean="loggingInInterceptor" />
+		</cxf:inFaultInterceptors>
+		<cxf:outFaultInterceptors>
+			<ref bean="loggingOutInterceptor" />
+		</cxf:outFaultInterceptors>
+	</cxf:bus>
+
+</beans>
