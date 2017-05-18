@@ -47,7 +47,7 @@
 		<project.source.version>1.8</project.source.version>
 		<project.encoding>UTF-8</project.encoding>
 
-		<dss.framework.version>5.0</dss.framework.version>
+		<dss.framework.version>5.1-SNAPSHOT</dss.framework.version>
 
 		<slf4j.version>1.7.22</slf4j.version>
 		<logback-classic.version>1.1.9</logback-classic.version>
@@ -235,57 +235,57 @@
 			<!-- DSS Framework dependencies -->
 			
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-service</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-remote-services</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-rest</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-soap</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-rest</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-soap</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-token</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-validation</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 <!-- 			<dependency> -->
-<!-- 				<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId> -->
 <!-- 				<artifactId>dss-utils-apache-commons</artifactId> -->
 <!-- 				<version>${dss.framework.version}</version> -->
 <!-- 			</dependency> -->
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-utils-google-guava</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-cookbook</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
@@ -406,10 +406,10 @@
 			</dependency>
 
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-test</artifactId>
+				<version>${dss.framework.version}</version>
 				<scope>test</scope>
-				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>

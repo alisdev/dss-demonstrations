@@ -7,7 +7,6 @@ import java.util.Properties;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 

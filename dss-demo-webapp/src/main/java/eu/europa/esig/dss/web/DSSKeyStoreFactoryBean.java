@@ -22,6 +22,7 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 	private String keyStoreType;
 	private String keyStoreFilename;
 	private String keyStorePassword;
+	private String keyStoreDataFolder;
 
 	public void setKeyStoreType(String keyStoreType) {
 		this.keyStoreType = keyStoreType;
@@ -33,6 +34,10 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 
 	public void setKeyStorePassword(String keyStorePassword) {
 		this.keyStorePassword = keyStorePassword;
+	}
+	
+	public void setKeyStoreDataFolder(String keyStoreDataFolder) {
+		this.keyStoreDataFolder = keyStoreDataFolder;
 	}
 
 	@Override
@@ -79,6 +84,11 @@ public class DSSKeyStoreFactoryBean extends AbstractFactoryBean<KeyStoreCertific
 	}
 
 	private String getDssDataFolder() {
+		if(Utils.isStringNotEmpty(keyStoreDataFolder)) {
+			logger.info(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER + " found as bean property : " + keyStoreDataFolder);
+			return keyStoreDataFolder;
+		}
+		
 		String dssDataFolder = System.getProperty(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER);
 		if (Utils.isStringNotEmpty(dssDataFolder)) {
 			logger.info(ENVIRONMENT_VARIABLE_DSS_DATA_FOLDER + " found as system property : " + dssDataFolder);
