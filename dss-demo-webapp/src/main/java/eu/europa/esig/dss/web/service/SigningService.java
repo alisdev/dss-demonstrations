@@ -2,9 +2,8 @@ package eu.europa.esig.dss.web.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -32,6 +31,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.model.AbstractSignatureForm;
 import eu.europa.esig.dss.web.model.ExtensionForm;
@@ -86,7 +86,7 @@ public class SigningService {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ToBeSigned getDataToSign(SignatureDocumentForm form) {
 		logger.info("Start getDataToSign with one document");
-		DocumentSignatureService service = getSignatureService(null, form.getSignatureForm());
+		DocumentSignatureService service = getSignatureService(form.getContainerType(), form.getSignatureForm());
 
 		AbstractSignatureParameters parameters = fillParameters(form);
 
@@ -119,6 +119,33 @@ public class SigningService {
 		return toBeSigned;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public TimestampToken getContentTimestamp(SignatureDocumentForm form) {
+		logger.info("Start getContentTimestamp with one document");
+
+		DocumentSignatureService service = getSignatureService(form.getContainerType(), form.getSignatureForm());
+		AbstractSignatureParameters parameters = fillParameters(form);
+		DSSDocument toSignDocument = WebAppUtils.toDSSDocument(form.getDocumentToSign());
+
+		TimestampToken contentTimestamp = service.getContentTimestamp(toSignDocument, parameters);
+
+		logger.info("End getContentTimestamp with one document");
+		return contentTimestamp;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public TimestampToken getContentTimestamp(SignatureMultipleDocumentsForm form) {
+		logger.info("Start getContentTimestamp with multiple documents");
+
+		MultipleDocumentsSignatureService service = getASiCSignatureService(form.getSignatureForm());
+		AbstractSignatureParameters parameters = fillParameters(form);
+
+		TimestampToken contentTimestamp = service.getContentTimestamp(WebAppUtils.toDSSDocuments(form.getDocumentsToSign()), parameters);
+
+		logger.info("End getContentTimestamp with  multiple documents");
+		return contentTimestamp;
+	}
+
 	private AbstractSignatureParameters fillParameters(SignatureMultipleDocumentsForm form) {
 		AbstractSignatureParameters finalParameters = getASiCSignatureParameters(form.getContainerType(), form.getSignatureForm());
 
@@ -128,7 +155,7 @@ public class SigningService {
 	}
 
 	private AbstractSignatureParameters fillParameters(SignatureDocumentForm form) {
-		AbstractSignatureParameters parameters = getSignatureParameters(null, form.getSignatureForm());
+		AbstractSignatureParameters parameters = getSignatureParameters(form.getContainerType(), form.getSignatureForm());
 		parameters.setSignaturePackaging(form.getSignaturePackaging());
 
 		fillParameters(parameters, form);
@@ -144,13 +171,17 @@ public class SigningService {
 
 		parameters.setSignWithExpiredCertificate(form.isSignWithExpiredCertificate());
 
+		if (form.getContentTimestamp() != null) {
+			parameters.setContentTimestamps(Arrays.asList(WebAppUtils.toTimestampToken(form.getContentTimestamp())));
+		}
+
 		CertificateToken signingCertificate = DSSUtils.loadCertificateFromBase64EncodedString(form.getBase64Certificate());
 		parameters.setSigningCertificate(signingCertificate);
 		parameters.setEncryptionAlgorithm(signingCertificate.getEncryptionAlgorithm());
 
 		List<String> base64CertificateChain = form.getBase64CertificateChain();
 		if (Utils.isCollectionNotEmpty(base64CertificateChain)) {
-			List<CertificateToken> certificateChain = new ArrayList<CertificateToken>();
+			List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
 			for (String base64Certificate : base64CertificateChain) {
 				certificateChain.add(DSSUtils.loadCertificateFromBase64EncodedString(base64Certificate));
 			}
@@ -161,7 +192,7 @@ public class SigningService {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DSSDocument signDocument(SignatureDocumentForm form) {
 		logger.info("Start signDocument with one document");
-		DocumentSignatureService service = getSignatureService(null, form.getSignatureForm());
+		DocumentSignatureService service = getSignatureService(form.getContainerType(), form.getSignatureForm());
 
 		AbstractSignatureParameters parameters = fillParameters(form);
 

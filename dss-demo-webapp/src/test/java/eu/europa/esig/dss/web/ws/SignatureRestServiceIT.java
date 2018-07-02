@@ -4,15 +4,17 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 import eu.europa.esig.dss.ASiCContainerType;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -36,16 +38,21 @@ import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.web.config.CXFConfig;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/test-rest-context.xml")
-public class SignatureRestServiceIT {
+public class SignatureRestServiceIT extends AbstractIT {
 
-	@Autowired
 	private RestDocumentSignatureService restClient;
-
-	@Autowired
 	private RestMultipleDocumentSignatureService restMultiDocsClient;
+
+	@Before
+	public void init() {
+		restClient = JAXRSClientFactory.create(getBaseCxf() + CXFConfig.REST_SIGNATURE_ONE_DOCUMENT, RestDocumentSignatureService.class,
+				Arrays.asList(new JacksonJsonProvider()));
+
+		restMultiDocsClient = JAXRSClientFactory.create(getBaseCxf() + CXFConfig.REST_SIGNATURE_MULTIPLE_DOCUMENTS, RestMultipleDocumentSignatureService.class,
+				Arrays.asList(new JacksonJsonProvider()));
+	}
 
 	@Test
 	public void testSigningAndExtension() throws Exception {
@@ -60,8 +67,7 @@ public class SignatureRestServiceIT {
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName(),
-				fileToSign.getAbsolutePath());
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName());
 		ToBeSigned dataToSign = restClient.getDataToSign(new DataToSignOneDocumentDTO(toSignDocument, parameters));
 		assertNotNull(dataToSign);
 
@@ -83,6 +89,43 @@ public class SignatureRestServiceIT {
 	}
 
 	@Test
+	public void testSigningAndExtensionDigestDocument() throws Exception {
+		CertificateService certificateService = new CertificateService();
+
+		MockPrivateKeyEntry entry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+
+		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		parameters.setSigningCertificate(new RemoteCertificate(entry.getCertificate().getCertificate().getEncoded()));
+		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileToSign), DigestAlgorithm.SHA256,
+				fileToSign.getMimeType(), fileToSign.getName());
+
+		ToBeSigned dataToSign = restClient.getDataToSign(new DataToSignOneDocumentDTO(toSignDocument, parameters));
+		assertNotNull(dataToSign);
+
+		SignatureValue signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, entry, dataToSign);
+		SignOneDocumentDTO signDocument = new SignOneDocumentDTO(toSignDocument, parameters, signatureValue);
+		RemoteDocument signedDocument = restClient.signDocument(signDocument);
+
+		assertNotNull(signedDocument);
+
+		parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+		parameters.setDetachedContents(Arrays.asList(toSignDocument));
+
+		RemoteDocument extendedDocument = restClient.extendDocument(new ExtendDocumentDTO(signedDocument, parameters));
+
+		assertNotNull(extendedDocument);
+
+		InMemoryDocument iMD = new InMemoryDocument(extendedDocument.getBytes());
+		iMD.save("target/test-digest.xml");
+	}
+
+	@Test
 	public void testSigningAndExtensionMultiDocuments() throws Exception {
 		CertificateService certificateService = new CertificateService();
 
@@ -95,8 +138,7 @@ public class SignatureRestServiceIT {
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName(),
-				fileToSign.getAbsolutePath());
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName());
 		RemoteDocument toSignDoc2 = new RemoteDocument("Hello world!".getBytes("UTF-8"), MimeType.BINARY, "test.bin");
 		List<RemoteDocument> toSignDocuments = new ArrayList<RemoteDocument>();
 		toSignDocuments.add(toSignDocument);

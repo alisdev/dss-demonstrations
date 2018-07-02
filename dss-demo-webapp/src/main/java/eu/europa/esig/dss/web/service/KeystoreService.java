@@ -20,7 +20,7 @@ public class KeystoreService {
 	private KeyStoreCertificateSource keyStoreCertificateSource;
 
 	public List<CertificateDTO> getCertificatesDTOFromKeyStore() {
-		List<CertificateDTO> list = new ArrayList<CertificateDTO>();
+		List<CertificateDTO> list = new ArrayList<>();
 		List<CertificateToken> certificatesFromKeyStore = keyStoreCertificateSource.getCertificates();
 		for (CertificateToken certificateToken : certificatesFromKeyStore) {
 			list.add(getCertificateDTO(certificateToken));

@@ -4,15 +4,17 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.europa.esig.dss.ASiCContainerType;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -36,16 +38,31 @@ import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.web.config.CXFConfig;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/test-soap-context.xml")
-public class SignatureSoapServiceIT {
+public class SignatureSoapServiceIT extends AbstractIT {
 
-	@Autowired
 	private SoapDocumentSignatureService soapClient;
-
-	@Autowired
 	private SoapMultipleDocumentsSignatureService soapMultiDocsClient;
+
+	@Before
+	public void init() {
+
+		Map<String, Object> props = new HashMap<String, Object>();
+		props.put("mtom-enabled", Boolean.TRUE);
+
+		JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+		factory.setServiceClass(SoapDocumentSignatureService.class);
+		factory.setProperties(props);
+		factory.setAddress(getBaseCxf() + CXFConfig.SOAP_SIGNATURE_ONE_DOCUMENT);
+		soapClient = (SoapDocumentSignatureService) factory.create();
+
+		JaxWsProxyFactoryBean factory2 = new JaxWsProxyFactoryBean();
+		factory2.setServiceClass(SoapMultipleDocumentsSignatureService.class);
+		factory2.setProperties(props);
+		factory2.setAddress(getBaseCxf() + CXFConfig.SOAP_SIGNATURE_MULTIPLE_DOCUMENTS);
+		soapMultiDocsClient = (SoapMultipleDocumentsSignatureService) factory2.create();
+	}
 
 	@Test
 	public void testSigningAndExtension() throws Exception {
@@ -60,8 +77,7 @@ public class SignatureSoapServiceIT {
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName(),
-				fileToSign.getAbsolutePath());
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName());
 		ToBeSigned dataToSign = soapClient.getDataToSign(new DataToSignOneDocumentDTO(toSignDocument, parameters));
 		assertNotNull(dataToSign);
 
@@ -83,6 +99,43 @@ public class SignatureSoapServiceIT {
 	}
 
 	@Test
+	public void testSigningAndExtensionDigestDocument() throws Exception {
+		CertificateService certificateService = new CertificateService();
+
+		MockPrivateKeyEntry entry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+
+		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		parameters.setSigningCertificate(new RemoteCertificate(entry.getCertificate().getCertificate().getEncoded()));
+		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+		FileDocument fileToSign = new FileDocument(new File("src/test/resources/dss-test.properties"));
+		RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileToSign), DigestAlgorithm.SHA256,
+				fileToSign.getMimeType(), fileToSign.getName());
+
+		ToBeSigned dataToSign = soapClient.getDataToSign(new DataToSignOneDocumentDTO(toSignDocument, parameters));
+		assertNotNull(dataToSign);
+
+		SignatureValue signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, entry, dataToSign);
+		SignOneDocumentDTO signDocument = new SignOneDocumentDTO(toSignDocument, parameters, signatureValue);
+		RemoteDocument signedDocument = soapClient.signDocument(signDocument);
+
+		assertNotNull(signedDocument);
+
+		parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		parameters.setDetachedContents(Arrays.asList(toSignDocument));
+
+		RemoteDocument extendedDocument = soapClient.extendDocument(new ExtendDocumentDTO(signedDocument, parameters));
+
+		assertNotNull(extendedDocument);
+
+		InMemoryDocument iMD = new InMemoryDocument(extendedDocument.getBytes());
+		iMD.save("target/test-digest.xml");
+	}
+
+	@Test
 	public void testSigningAndExtensionMultiDocuments() throws Exception {
 		CertificateService certificateService = new CertificateService();
 
@@ -95,8 +148,7 @@ public class SignatureSoapServiceIT {
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName(),
-				fileToSign.getAbsolutePath());
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName());
 		RemoteDocument toSignDoc2 = new RemoteDocument("Hello world!".getBytes("UTF-8"), MimeType.BINARY, "test.bin");
 		List<RemoteDocument> toSignDocuments = new ArrayList<RemoteDocument>();
 		toSignDocuments.add(toSignDocument);

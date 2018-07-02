@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>dss-demos</artifactId>
-		<version>5.0</version>
+		<version>5.3</version>
 	</parent>
 
 	<artifactId>dss-demo-webapp</artifactId>
@@ -79,7 +78,27 @@
 			                <overwrite>true</overwrite>
 			                <resources>
 			                    <resource>
-			                        <directory>../../dss/dss-cookbook/target/generated-docs</directory>
+			                        <directory>${dss.framework.root.directory}/dss-cookbook/target/generated-docs</directory>
+			                        <includes>
+			                            <include>**/*</include>
+			                            <include>*</include>
+			                        </includes>
+			                    </resource>
+			                </resources>
+			            </configuration>
+			        </execution>
+			        <execution>
+			            <id>copy-javadoc</id>
+						<phase>process-resources</phase>
+			            <goals>
+			                <goal>copy-resources</goal>
+			            </goals>
+			            <configuration>
+			                <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/apidocs</outputDirectory>
+			                <overwrite>true</overwrite>
+			                <resources>
+			                    <resource>
+			                        <directory>${dss.framework.root.directory}/target/site/apidocs</directory>
 			                        <includes>
 			                            <include>**/*</include>
 			                            <include>*</include>
@@ -92,7 +111,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat6-maven-plugin</artifactId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
 	            <configuration>
 	                <path>/</path>
 	            </configuration>
@@ -103,6 +122,12 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -110,6 +135,12 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -123,10 +154,29 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-oxm</artifactId>
 		</dependency>
+		<dependency>
+	        <groupId>org.springframework.security</groupId>
+	        <artifactId>spring-security-web</artifactId>
+	    </dependency>
+	    <dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+	    
+		<dependency>
+		    <groupId>org.thymeleaf</groupId>
+		    <artifactId>thymeleaf-spring4</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-service</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
@@ -142,11 +192,17 @@
 			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-utils-google-guava</artifactId>
 		</dependency>
-		
+
+		<!-- Choose your implementation -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<artifactId>dss-crl-parser-x509crl</artifactId> -->
+<!-- 		</dependency> -->
 		<dependency>
-			<groupId>org.quartz-scheduler</groupId>
-			<artifactId>quartz</artifactId>
+			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-crl-parser-stream</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
@@ -177,6 +233,11 @@
 			<artifactId>dss-validation-soap</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-server-signing-soap</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		
 		<!-- REST -->
 		
@@ -205,9 +266,19 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-server-signing-rest</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 		    <groupId>org.apache.cxf</groupId>
 		    <artifactId>cxf-rt-rs-client</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-token</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		
 		<!-- Replace commons-logging -->
@@ -216,16 +287,6 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
 		
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tiles</groupId>
-			<artifactId>tiles-jsp</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -243,7 +304,7 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.3.1</version>
+			<version>1.3.3</version>
 		</dependency>
 		
 		<dependency>
@@ -255,7 +316,7 @@
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop</artifactId>
-			<version>2.0</version>
+			<version>2.2</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>commons-logging</artifactId>
@@ -267,7 +328,7 @@
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>google-code-prettify</artifactId>
-			<version>1.0.4</version>
+			<version>1.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -282,21 +343,15 @@
 		
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>4.3.1.Final</version>
+			<version>5.4.2.Final</version>
 		</dependency>
-		
-		<dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.2.3</version>
-        </dependency>
 		
 		<dependency>
 			<groupId>junit</groupId>
@@ -348,7 +403,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-failsafe-plugin</artifactId>
-						<version>2.12</version>
+						<version>2.17</version>
 						<executions>
 							<execution>
 								<goals>
@@ -363,15 +418,12 @@
 							</includes>
 						</configuration>
 					</plugin>
-					<plugin>
+					<plugin>	
 						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat6-maven-plugin</artifactId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
 						<configuration>
 							<path>/</path>
 							<port>8765</port>
-							<systemProperties>
-        						<log>${project.build.directory}/src/test/resources</log>
-        					</systemProperties>
 						</configuration>
 						<executions>
 							<execution>

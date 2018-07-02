@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -37,6 +38,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.web.WebAppUtils;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.DataToSignParams;
 import eu.europa.esig.dss.web.model.GetDataToSignResponse;
@@ -58,12 +60,16 @@ public class SignatureController {
 	@Value("${nexuUrl}")
 	private String nexuUrl;
 
+	@Value("${baseUrl}")
+	private String downloadNexuUrl;
+
 	@Autowired
 	private SigningService signingService;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(SignatureForm.class, new EnumPropertyEditor(SignatureForm.class));
+		binder.registerCustomEditor(ASiCContainerType.class, new EnumPropertyEditor(ASiCContainerType.class));
 		binder.registerCustomEditor(SignaturePackaging.class, new EnumPropertyEditor(SignaturePackaging.class));
 		binder.registerCustomEditor(SignatureLevel.class, new EnumPropertyEditor(SignatureLevel.class));
 		binder.registerCustomEditor(DigestAlgorithm.class, new EnumPropertyEditor(DigestAlgorithm.class));
@@ -74,6 +80,7 @@ public class SignatureController {
 	public String showSignatureParameters(Model model, HttpServletRequest request) {
 		SignatureDocumentForm signatureDocumentForm = new SignatureDocumentForm();
 		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
+		model.addAttribute("downloadNexuUrl", downloadNexuUrl);
 		return SIGNATURE_PARAMETERS;
 	}
 
@@ -101,6 +108,11 @@ public class SignatureController {
 		signatureDocumentForm.setBase64CertificateChain(params.getCertificateChain());
 		signatureDocumentForm.setEncryptionAlgorithm(params.getEncryptionAlgorithm());
 		signatureDocumentForm.setSigningDate(new Date());
+
+		if (signatureDocumentForm.isAddContentTimestamp()) {
+			signatureDocumentForm.setContentTimestamp(WebAppUtils.fromTimestampToken(signingService.getContentTimestamp(signatureDocumentForm)));
+		}
+
 		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
 
 		ToBeSigned dataToSign = signingService.getDataToSign(signatureDocumentForm);
@@ -146,9 +158,14 @@ public class SignatureController {
 		return null;
 	}
 
+	@ModelAttribute("asicContainerTypes")
+	public ASiCContainerType[] getASiCContainerTypes() {
+		return ASiCContainerType.values();
+	}
+
 	@ModelAttribute("signatureForms")
 	public SignatureForm[] getSignatureForms() {
-		return SignatureForm.values();
+		return new SignatureForm[] { SignatureForm.CAdES, SignatureForm.PAdES, SignatureForm.XAdES };
 	}
 
 	@ModelAttribute("signaturePackagings")
