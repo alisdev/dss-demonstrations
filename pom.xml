@@ -47,7 +47,7 @@
 		<project.source.version>1.8</project.source.version>
 		<project.encoding>UTF-8</project.encoding>
 
-		<dss.framework.version>5.1-SNAPSHOT</dss.framework.version>
+		<dss.framework.version>5.4-SNAPSHOT</dss.framework.version>
 
 		<slf4j.version>1.7.22</slf4j.version>
 		<logback-classic.version>1.1.9</logback-classic.version>
@@ -379,7 +379,6 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>jul-to-slf4j</artifactId> <!-- Replaces java.util.Logging (see http://www.slf4j.org/images/legacy.png) -->
 				<version>${slf4j.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>

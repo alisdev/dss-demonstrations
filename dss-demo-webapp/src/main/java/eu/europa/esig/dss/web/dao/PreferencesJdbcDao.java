@@ -31,7 +31,6 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Required;
 
-import eu.europa.esig.dss.client.http.proxy.ProxyDaoException;
 import eu.europa.esig.dss.web.model.Preference;
 
 public class PreferencesJdbcDao implements PreferencesDao {
@@ -75,7 +74,7 @@ public class PreferencesJdbcDao implements PreferencesDao {
 			}
 			return null;
 		} catch (SQLException e) {
-			throw new ProxyDaoException(e);
+			throw new RuntimeException(e);
 		} finally {
 			try {
 				if (resultSet != null) {
@@ -118,7 +117,7 @@ public class PreferencesJdbcDao implements PreferencesDao {
 				prefs.add(pp);
 			}
 		} catch (SQLException e) {
-			throw new ProxyDaoException(e);
+			throw new RuntimeException(e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -132,7 +131,7 @@ public class PreferencesJdbcDao implements PreferencesDao {
 					connection.close();
 				}
 			} catch (SQLException e) {
-
+				throw new RuntimeException(e);
 			}
 		}
 		return prefs;
@@ -156,7 +155,7 @@ public class PreferencesJdbcDao implements PreferencesDao {
 			preparedStatement.setString(2, entity.getKey());
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			throw new ProxyDaoException(e);
+			throw new RuntimeException(e);
 		} finally {
 			try {
 				if (preparedStatement != null) {
@@ -167,6 +166,7 @@ public class PreferencesJdbcDao implements PreferencesDao {
 					connection.close();
 				}
 			} catch (SQLException e) {
+				throw new RuntimeException(e);
 			}
 		}
 	}

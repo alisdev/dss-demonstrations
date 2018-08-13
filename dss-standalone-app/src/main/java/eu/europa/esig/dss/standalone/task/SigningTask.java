@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.standalone.task;
 
 import java.io.IOException;
+import java.security.KeyStore.PasswordProtection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +33,8 @@ public class SigningTask extends Task<DSSDocument> {
 	private RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> service;
 	private SignatureModel model;
 
-	public SigningTask(RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> service, SignatureModel model) {
+	public SigningTask(RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> service,
+			SignatureModel model) {
 		this.service = service;
 		this.model = model;
 	}
@@ -50,8 +52,8 @@ public class SigningTask extends Task<DSSDocument> {
 		DSSPrivateKeyEntry signer = getSigner(keys);
 
 		FileDocument fileToSign = new FileDocument(model.getFileToSign());
-		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getMimeType(), fileToSign.getName(),
-				fileToSign.getAbsolutePath());
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()),
+				fileToSign.getMimeType(), fileToSign.getName());
 		RemoteSignatureParameters parameters = buildParameters(signer);
 
 		ToBeSigned toBeSigned = getDataToSign(toSignDocument, parameters);
@@ -97,7 +99,8 @@ public class SigningTask extends Task<DSSDocument> {
 		return toBeSigned;
 	}
 
-	private SignatureValue signDigest(SignatureTokenConnection token, DSSPrivateKeyEntry signer, ToBeSigned toBeSigned) {
+	private SignatureValue signDigest(SignatureTokenConnection token, DSSPrivateKeyEntry signer,
+			ToBeSigned toBeSigned) {
 		updateProgress(50, 100);
 		SignatureValue signatureValue = null;
 		try {
@@ -108,7 +111,8 @@ public class SigningTask extends Task<DSSDocument> {
 		return signatureValue;
 	}
 
-	private DSSDocument signDocument(RemoteDocument toSignDocument, RemoteSignatureParameters parameters, SignatureValue signatureValue) {
+	private DSSDocument signDocument(RemoteDocument toSignDocument, RemoteSignatureParameters parameters,
+			SignatureValue signatureValue) {
 		updateProgress(75, 100);
 		DSSDocument signDocument = null;
 		try {
@@ -139,9 +143,11 @@ public class SigningTask extends Task<DSSDocument> {
 	private SignatureTokenConnection getToken(SignatureModel model) throws IOException {
 		switch (model.getTokenType()) {
 		case PKCS11:
-			return new Pkcs11SignatureToken(model.getPkcsFile().getAbsolutePath(), model.getPassword().toCharArray());
+			return new Pkcs11SignatureToken(model.getPkcsFile().getAbsolutePath(),
+					new PasswordProtection(model.getPassword().toCharArray()));
 		case PKCS12:
-			return new Pkcs12SignatureToken(model.getPkcsFile(), model.getPassword());
+			return new Pkcs12SignatureToken(model.getPkcsFile(),
+					new PasswordProtection(model.getPassword().toCharArray()));
 		case MSCAPI:
 			return new MSCAPISignatureToken();
 		default:
