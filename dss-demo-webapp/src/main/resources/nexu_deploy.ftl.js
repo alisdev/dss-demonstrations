@@ -12,19 +12,28 @@
  * Consultez la Licence pour les autorisations et les restrictions linguistiques spécifiques relevant de la Licence.
  */
 
-var nexuVersion = ${nexuVersion};
+var nexuVersion = "${nexuVersion}";
+
+// IE
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function(searchString, position){
+    return this.substr(position || 0, searchString.length) === searchString;
+  };
+}
 
 $.get("${nexuUrl}/nexu-info", function(data) {
 	// something responded
-	if(data.version == nexuVersion) {
+	if(data.version.startsWith(nexuVersion)) {
 		// valid version
 		// load nexu script 
 		console.log("Loading script...");
 		loadScript();
+	    $("#nexu_ready_alert").slideDown();
+	    $("#submit-button").prop('disabled', false);
 	} else {
 		// need update
-		$(".nexu-sign-button").html("Update NexU");
-		$(".nexu-sign-button").on("click", function() {
+		$("#submit-button").html("Update NexU");
+		$("#submit-button").on("click", function() {
 			console.log("Update NexU");
 			return false;
 		});
@@ -38,6 +47,9 @@ $.get("${nexuUrl}/nexu-info", function(data) {
 		window.location = "${baseUrl}";
 		return false;
 	});
+	
+    $("#warning-text").html("NexU not detected or not started ! ");
+    $("#nexu_missing_alert").slideDown();
 });
 
 function loadScript() {

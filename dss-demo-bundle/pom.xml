@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>dss-demos</artifactId>
-		<version>5.0</version>
+		<version>5.4</version>
 	</parent>
 
 	<name>DSS Package: OOTB Web-Application</name>
@@ -15,6 +14,11 @@
 
 	<artifactId>dss-demo-bundle</artifactId>
 	<packaging>pom</packaging>
+	
+	<properties>
+		<tomcat.version>8.5.35</tomcat.version>
+		<tomcat.root.folder>apache-tomcat-${tomcat.version}</tomcat.root.folder>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -23,22 +27,17 @@
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>jre-win32</artifactId>
-			<version>8.0.45</version>
-			<type>zip</type>
+			<groupId>com.oracle.java</groupId>
+			<artifactId>jre</artifactId>
+			<version>1.8.0_131</version>
+			<classifier>win64</classifier>
+			<type>tgz</type>
 		</dependency>
 		<dependency>
-			<groupId>org.apache</groupId>
-			<artifactId>tomcat</artifactId>
-			<version>8.0.21</version>
+		    <groupId>org.apache.tomcat</groupId>
+		    <artifactId>tomcat</artifactId>
+		    <version>${tomcat.version}</version>
 			<type>zip</type>
-		</dependency>
-		<dependency>
-			<groupId>lu.nowina.apps</groupId>
-			<artifactId>nexu-bundle</artifactId>
-			<version>${nexu.version}</version>
-			<type>pom</type>
 		</dependency>
 	</dependencies>
 
@@ -75,5 +74,12 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>alfresco</id>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/public</url>
+		</repository>
+	</repositories>
 
 </project>

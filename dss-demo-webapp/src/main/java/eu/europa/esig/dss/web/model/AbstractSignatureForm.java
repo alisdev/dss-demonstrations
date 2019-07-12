@@ -19,6 +19,8 @@ public abstract class AbstractSignatureForm {
 
 	private boolean signWithExpiredCertificate;
 
+	private boolean addContentTimestamp;
+
 	@NotNull(message = "{error.signature.form.mandatory}")
 	private SignatureForm signatureForm;
 
@@ -35,6 +37,8 @@ public abstract class AbstractSignatureForm {
 	private EncryptionAlgorithm encryptionAlgorithm;
 
 	private String base64SignatureValue;
+
+	private TimestampDTO contentTimestamp;
 
 	public boolean isNexuDetected() {
 		return nexuDetected;
@@ -58,6 +62,14 @@ public abstract class AbstractSignatureForm {
 
 	public void setSignWithExpiredCertificate(boolean signWithExpiredCertificate) {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
+	}
+
+	public boolean isAddContentTimestamp() {
+		return addContentTimestamp;
+	}
+
+	public void setAddContentTimestamp(boolean addContentTimestamp) {
+		this.addContentTimestamp = addContentTimestamp;
 	}
 
 	public SignatureForm getSignatureForm() {
@@ -114,6 +126,14 @@ public abstract class AbstractSignatureForm {
 
 	public void setBase64SignatureValue(String base64SignatureValue) {
 		this.base64SignatureValue = base64SignatureValue;
+	}
+
+	public TimestampDTO getContentTimestamp() {
+		return contentTimestamp;
+	}
+
+	public void setContentTimestamp(TimestampDTO contentTimestamp) {
+		this.contentTimestamp = contentTimestamp;
 	}
 
 }

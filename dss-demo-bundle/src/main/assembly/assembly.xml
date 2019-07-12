@@ -13,8 +13,13 @@
 
 	<fileSets>
 		<fileSet>
-			<directory>src/main/resources</directory>
+			<directory>src/main/resources/root/</directory>
 			<outputDirectory></outputDirectory>
+			<filtered>true</filtered>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/resources/tomcat/</directory>
+			<outputDirectory>${tomcat.root.folder}</outputDirectory>
 		</fileSet>
 	</fileSets>
 	
@@ -22,21 +27,20 @@
 		<dependencySet>
 			<unpack>true</unpack>
 			<includes>
-				<include>com.oracle:jre-win32:zip</include>
+				<include>com.oracle.java:jre:tgz:win64</include>
 			</includes>
-			<outputDirectory>java</outputDirectory>
 			<fileMode>0644</fileMode>
 		</dependencySet>
 		<dependencySet>
 			<includes>
-				<include>org.apache:tomcat:zip</include>
+				<include>org.apache.tomcat:tomcat:zip</include>
 			</includes>
 			<fileMode>0644</fileMode>
 			<unpack>true</unpack>
 			<unpackOptions>
 				<excludes>
-					<exclude>tomcat/conf/tomcat-users.xml</exclude>
-					<exclude>tomcat/webapps/**/*</exclude>
+					<exclude>${tomcat.root.folder}/conf/tomcat-users.xml</exclude>
+					<exclude>${tomcat.root.folder}/webapps/**/*</exclude>
 				</excludes>
 			</unpackOptions>
 		</dependencySet>
@@ -44,16 +48,9 @@
 			<includes>
 				<include>eu.europa.ec.joinup.sd-dss:dss-demo-webapp:war</include>
 			</includes>
-			<outputDirectory>tomcat/webapps</outputDirectory>
+			<outputDirectory>${tomcat.root.folder}/webapps</outputDirectory>
 			<!-- Works only if there is one include -->
 			<outputFileNameMapping>ROOT.war</outputFileNameMapping>
-		</dependencySet>
-		<dependencySet>
-			<includes>
-				<include>lu.nowina.apps:nexu-app:jar</include>
-			</includes>
-			<outputDirectory></outputDirectory>
-			<outputFileNameMapping>nexu.jar</outputFileNameMapping>
 		</dependencySet>
 	</dependencySets>
 </assembly>

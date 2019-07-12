@@ -2,7 +2,6 @@ package eu.europa.esig.dss.web.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.MimeType;
@@ -86,32 +84,26 @@ public class ValidationController {
 		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(WebAppUtils.toDSSDocument(validationForm.getSignedFile()));
 		documentValidator.setCertificateVerifier(certificateVerifier);
 
-		MultipartFile originalFile = validationForm.getOriginalFile();
-		if ((originalFile != null) && !originalFile.isEmpty()) {
-			List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-			detachedContents.add(WebAppUtils.toDSSDocument(originalFile));
-			documentValidator.setDetachedContents(detachedContents);
+		List<DSSDocument> originalFiles = WebAppUtils.toDSSDocuments(validationForm.getOriginalFiles());
+		if (Utils.isCollectionNotEmpty(originalFiles)) {
+			documentValidator.setDetachedContents(originalFiles);
 		}
 		documentValidator.setValidationLevel(validationForm.getValidationLevel());
 
 		Reports reports = null;
 
-		MultipartFile policyFile = validationForm.getPolicyFile();
-		if (!validationForm.isDefaultPolicy() && (policyFile != null) && !policyFile.isEmpty()) {
-			try {
-				reports = documentValidator.validateDocument(policyFile.getInputStream());
+		DSSDocument policyFile = WebAppUtils.toDSSDocument(validationForm.getPolicyFile());
+		if (!validationForm.isDefaultPolicy() && (policyFile != null)) {
+			try (InputStream is = policyFile.openStream()) {
+				reports = documentValidator.validateDocument(is);
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
 			}
 		} else if (defaultPolicy != null) {
-			InputStream dpis = null;
-			try {
-				dpis = defaultPolicy.getInputStream();
-				reports = documentValidator.validateDocument(dpis);
+			try (InputStream is = defaultPolicy.getInputStream()) {
+				reports = documentValidator.validateDocument(is);
 			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
-			} finally {
-				Utils.closeQuietly(dpis);
+				logger.error("Unable to parse policy : " + e.getMessage(), e);
 			}
 		} else {
 			logger.error("Not correctly initialized");
@@ -163,6 +155,11 @@ public class ValidationController {
 	@ModelAttribute("validationLevels")
 	public ValidationLevel[] getValidationLevels() {
 		return new ValidationLevel[] { ValidationLevel.BASIC_SIGNATURES, ValidationLevel.LONG_TERM_DATA, ValidationLevel.ARCHIVAL_DATA };
+	}
+
+	@ModelAttribute("displayDownloadPdf")
+	public boolean isDisplayDownloadPdf() {
+		return true;
 	}
 
 }
