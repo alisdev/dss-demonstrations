@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import cz.alis.dss.config.ConfigFileFinder;
-import eu.europa.esig.dss.web.AppInitializer;
 
 /**
  * Konfigurátor logování.

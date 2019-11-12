@@ -351,6 +351,7 @@
 				<artifactId>dss-pades-pdfbox</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-pades-openpdf</artifactId>
@@ -462,7 +463,6 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>jul-to-slf4j</artifactId> <!-- Replaces java.util.Logging (see http://www.slf4j.org/images/legacy.png) -->
 				<version>${slf4j.version}</version>
-				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>

@@ -151,7 +151,7 @@ public class DSSBeanConfig {
 		certificateVerifier.setDataLoader(dataLoader());
 
 		// Default configs
-		certificateVerifier.setExceptionOnMissingRevocationData(true);
+		certificateVerifier.setExceptionOnMissingRevocationData(false);
 		certificateVerifier.setCheckRevocationForUntrustedChains(false);
 
 		return certificateVerifier;
