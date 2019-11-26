@@ -19,6 +19,9 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<excludes> <!-- alisdev -->
+					<exclude>logback.xml</exclude>
+				</excludes>
 			</resource>
 		</resources>
 		<plugins>
@@ -244,7 +247,6 @@
 			<scope>compile</scope>
 		</dependency>
 		
-		<!-- Choose your PAdES implementation -->
 		<dependency>
 			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-pades-pdfbox</artifactId>
@@ -255,10 +257,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId> -->
-<!-- 			<artifactId>dss-pades-openpdf</artifactId> -->
-<!-- 		</dependency> -->
 		
 		<!-- REST -->
 		

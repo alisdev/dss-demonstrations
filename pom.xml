@@ -334,7 +334,6 @@
 				<artifactId>dss-utils-google-guava</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
-			
 <!-- 			<dependency> -->
 <!-- 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId> -->
 <!-- 				<artifactId>dss-crl-parser-x509crl</artifactId> -->
@@ -351,13 +350,11 @@
 				<artifactId>dss-pades-pdfbox</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
-			
-			<dependency>
-				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-pades-openpdf</artifactId>
-				<version>${dss.framework.version}</version>
-			</dependency>
-			
+<!-- alisdev	<dependency> -->
+<!-- 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 				<artifactId>dss-pades-openpdf</artifactId> -->
+<!-- 				<version>${dss.framework.version}</version> -->
+<!-- 			</dependency> -->
 			<dependency>
 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-cookbook</artifactId>
