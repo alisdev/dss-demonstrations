@@ -36,11 +36,12 @@ import org.bouncycastle.tsp.TimeStampTokenGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KeyStoreSignatureTokenConnection;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 public class MockTSPSource implements TSPSource {
 
@@ -64,6 +65,9 @@ public class MockTSPSource implements TSPSource {
 
 	@Override
 	public TimeStampToken getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest) {
+		if (token == null) {
+			throw new DSSException("KeyStore token is not defined!");
+		}
 		try {
 			TimeStampRequestGenerator requestGenerator = new TimeStampRequestGenerator();
 			requestGenerator.setCertReq(true);

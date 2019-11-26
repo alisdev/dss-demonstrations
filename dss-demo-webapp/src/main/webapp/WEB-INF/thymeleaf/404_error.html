@@ -24,9 +24,11 @@
                         <div class="row">
                             <th:block th:replace="fragment/menu :: menu"></th:block>
                             <div class="col-md-9">
+                                <H1>404 error</H1>
                                 <div class="alert alert-danger" role="alert">
-                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span class="sr-only">Error:</span> The credentials provided are invalid.
+                                    <p><strong>The page "<span th:text="${url}"></span>" is not found ! </strong></p>
                                 </div>
+                                <p><a th:href="@{/}">Back to Homepage</a></p>
                             </div>
                         </div>
                     </div>

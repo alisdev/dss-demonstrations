@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,17 +14,17 @@ import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DataToValidateDTO;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SoapDocumentValidationService;
-import eu.europa.esig.dss.validation.WSReportsDTO;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.web.config.CXFConfig;
+import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
+import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
+import eu.europa.esig.dss.ws.validation.soap.client.SoapDocumentValidationService;
 
 public class SoapDocumentValidationIT extends AbstractIT {
 
@@ -38,6 +37,7 @@ public class SoapDocumentValidationIT extends AbstractIT {
 
 		Map<String, Object> props = new HashMap<String, Object>();
 		props.put("mtom-enabled", Boolean.TRUE);
+//		props.put("jaxb.additionalContextClasses", getExtraClasses());
 		factory.setProperties(props);
 
 		factory.setAddress(getBaseCxf() + CXFConfig.SOAP_VALIDATION);
@@ -56,7 +56,7 @@ public class SoapDocumentValidationIT extends AbstractIT {
 	@Test
 	public void testWithNoPolicyAndNoOriginalFile() throws Exception {
 
-		RemoteDocument signedFile = toRemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, (RemoteDocument) null, null);
 
@@ -65,20 +65,22 @@ public class SoapDocumentValidationIT extends AbstractIT {
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
 		assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getValidationReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getTimestamps().size());
-		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.INDETERMINATE);
+		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getFoundTimestamps().size());
 
-		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), 
+				result.getValidationReport());
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignature().get(0).getIndication());
 		assertNotNull(reports);
 	}
 
 	@Test
 	public void testWithNoPolicyAndOriginalFile() throws Exception {
 
-		RemoteDocument signedFile = toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
-		RemoteDocument originalFile = toRemoteDocument(new FileDocument("src/test/resources/sample.xml"));
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.xml"));
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, originalFile, null);
 
@@ -87,22 +89,23 @@ public class SoapDocumentValidationIT extends AbstractIT {
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
 		assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getValidationReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.TOTAL_FAILED);
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignature().get(0).getIndication());
 
-		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), 
+				result.getValidationReport());
 		assertNotNull(reports);
 	}
 
 	@Test
 	public void testWithNoPolicyAndDigestOriginalFile() throws Exception {
 
-		RemoteDocument signedFile = toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 
 		FileDocument fileDocument = new FileDocument("src/test/resources/sample.xml");
-		RemoteDocument originalFile = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileDocument), fileDocument.getMimeType(),
-				fileDocument.getName());
+		RemoteDocument originalFile = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileDocument), fileDocument.getName());
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, originalFile, null);
 
@@ -111,20 +114,22 @@ public class SoapDocumentValidationIT extends AbstractIT {
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
 		assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getValidationReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.TOTAL_FAILED);
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignature().get(0).getIndication());
 
-		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), 
+				result.getValidationReport());
 		assertNotNull(reports);
 	}
 
 	@Test
 	public void testWithPolicyAndOriginalFile() throws Exception {
 
-		RemoteDocument signedFile = toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
-		RemoteDocument originalFile = toRemoteDocument(new FileDocument("src/test/resources/sample.xml"));
-		RemoteDocument policy = toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.xml"));
+		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, originalFile, policy);
 
@@ -133,18 +138,20 @@ public class SoapDocumentValidationIT extends AbstractIT {
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
 		assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getValidationReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.TOTAL_FAILED);
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignature().get(0).getIndication());
 
-		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), 
+				result.getValidationReport());
 		assertNotNull(reports);
 	}
 
 	@Test
 	public void testWithPolicyAndNoOriginalFile() throws Exception {
-		RemoteDocument signedFile = toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
-		RemoteDocument policy = toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
 
 		DataToValidateDTO toValidate = new DataToValidateDTO(signedFile, (RemoteDocument) null, policy);
 
@@ -153,21 +160,26 @@ public class SoapDocumentValidationIT extends AbstractIT {
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
 		assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getValidationReport());
 
 		assertEquals(1, result.getSimpleReport().getSignature().size());
-		assertEquals(result.getSimpleReport().getSignature().get(0).getIndication(), Indication.INDETERMINATE);
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignature().get(0).getIndication());
 
-		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport());
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), 
+				result.getValidationReport());
 		assertNotNull(reports);
 	}
 
 	@Test
 	public void testGetOriginals() throws Exception {
-		RemoteDocument signedFile = toRemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
 
 		DataToValidateDTO toValidate = new DataToValidateDTO();
-		toValidate.setSignatureId("id-0d11cae494b17e19234c619a9db45a97");
 		toValidate.setSignedDocument(signedFile);
+
+		WSReportsDTO reports = validationService.validateSignature(toValidate);
+		toValidate.setSignatureId(reports.getDiagnosticData().getSignatures().get(0).getId());
+		
 		List<RemoteDocument> result = validationService.getOriginalDocuments(toValidate);
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -178,7 +190,7 @@ public class SoapDocumentValidationIT extends AbstractIT {
 
 	@Test
 	public void testGetOriginalsWithoutId() throws Exception {
-		RemoteDocument signedFile = toRemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
 
 		DataToValidateDTO toValidate = new DataToValidateDTO();
 		toValidate.setSignedDocument(signedFile);
@@ -192,7 +204,7 @@ public class SoapDocumentValidationIT extends AbstractIT {
 
 	@Test
 	public void testGetOriginalsWithWrongId() throws Exception {
-		RemoteDocument signedFile = toRemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/XAdESLTA.xml"));
 
 		DataToValidateDTO toValidate = new DataToValidateDTO();
 		toValidate.setSignatureId("id-wrong");
@@ -200,10 +212,6 @@ public class SoapDocumentValidationIT extends AbstractIT {
 		List<RemoteDocument> result = validationService.getOriginalDocuments(toValidate);
 		// Difference with REST
 		assertNull(result);
-	}
-
-	private RemoteDocument toRemoteDocument(FileDocument fileDoc) throws IOException {
-		return new RemoteDocument(Utils.toByteArray(fileDoc.openStream()), fileDoc.getMimeType(), fileDoc.getName());
 	}
 
 }

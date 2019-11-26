@@ -7,21 +7,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import eu.europa.esig.dss.ASiCContainerType;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.SignatureTokenType;
-import eu.europa.esig.dss.signature.RemoteDocumentSignatureService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.SignatureTokenType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.standalone.fx.FileToStringConverter;
 import eu.europa.esig.dss.standalone.model.SignatureModel;
 import eu.europa.esig.dss.standalone.task.SigningTask;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.ws.signature.common.RemoteDocumentSignatureService;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -49,6 +50,8 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class SignatureController implements Initializable {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SignatureController.class);
 
 	@FXML
 	private Button fileSelectButton;
@@ -144,7 +147,7 @@ public class SignatureController implements Initializable {
 
 	private SignatureModel model;
 
-	private RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> signatureService;
+	private RemoteDocumentSignatureService signatureService;
 
 	static {
 		// Fix a freeze in Windows 10, JDK 8 and touchscreen
@@ -156,7 +159,7 @@ public class SignatureController implements Initializable {
 	}
 
 	public void setSignatureService(
-			RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> signatureService) {
+			RemoteDocumentSignatureService signatureService) {
 		this.signatureService = signatureService;
 	}
 
@@ -272,9 +275,17 @@ public class SignatureController implements Initializable {
 				FileChooser fileChooser = new FileChooser();
 				if (SignatureTokenType.PKCS11.equals(model.getTokenType())) {
 					fileChooser.setTitle("Library");
+					fileChooser.getExtensionFilters().add(
+							new FileChooser.ExtensionFilter("PKCS11 library (*.dll)", "*.dll"));
 				} else if (SignatureTokenType.PKCS12.equals(model.getTokenType())) {
 					fileChooser.setTitle("Keystore");
+					fileChooser.getExtensionFilters().add(
+							new FileChooser.ExtensionFilter("PKCS12 keystore (*.p12, *.pfx)", "*.p12", "*.pfx"));
 				}
+				
+				FileChooser.ExtensionFilter allFilesExtensionFilter = new FileChooser.ExtensionFilter("All files", "*");
+				fileChooser.getExtensionFilters().add(allFilesExtensionFilter);
+				
 				File pkcsFile = fileChooser.showOpenDialog(stage);
 				model.setPkcsFile(pkcsFile);
 			}
@@ -331,8 +342,9 @@ public class SignatureController implements Initializable {
 				service.setOnFailed(new EventHandler<WorkerStateEvent>() {
 					@Override
 					public void handle(WorkerStateEvent event) {
-						Alert alert = new Alert(AlertType.ERROR, "Oops an error occurred : " + service.getMessage(),
-								ButtonType.CLOSE);
+						String errorMessage = "Oops an error occurred : " + service.getMessage();
+						LOG.error(errorMessage, service.getException());
+						Alert alert = new Alert(AlertType.ERROR, errorMessage, ButtonType.CLOSE);
 						alert.showAndWait();
 						signButton.disableProperty().bind(disableSignButton);
 						model.setPassword(null);

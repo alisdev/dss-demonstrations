@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>dss-demos</artifactId>
-	<version>5.4</version>
+	<version>5.5</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services - demonstrations</name>
 
@@ -38,11 +38,17 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<id>beliakov</id>
+			<name>Aleksandr Beliakov</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
 
 	</developers>
 
 	<properties>
-
 		<project.source.version>1.8</project.source.version>
 		<project.encoding>UTF-8</project.encoding>
 
@@ -50,18 +56,21 @@
 		<!-- 	/root-folder/ -->
 		<!-- 	/root-folder/dss/... -->
 		<!-- 	/root-folder/dss-demos/... -->
-		<dss.framework.version>5.5-SNAPSHOT</dss.framework.version>
+		<dss.framework.version>5.5</dss.framework.version>
 		<dss.framework.root.directory>${project.parent.basedir}/../dss</dss.framework.root.directory>
 
-		<slf4j.version>1.7.25</slf4j.version>
+		<slf4j.version>1.7.28</slf4j.version>
 		<logback-classic.version>1.2.3</logback-classic.version>
 
-		<cxf.version>3.2.7</cxf.version>
-		<spring.version>4.3.19.RELEASE</spring.version>
-		<spring-security.version>4.2.8.RELEASE</spring-security.version>
-		<thymeleaf-spring4.version>3.0.9.RELEASE</thymeleaf-spring4.version>
-		<jackson-jaxrs-json-provider.version>2.9.7</jackson-jaxrs-json-provider.version>
-		<hsqldb.version>2.4.1</hsqldb.version>
+		<cxf.version>3.3.3</cxf.version>
+		<spring.version>5.1.9.RELEASE</spring.version>
+		<spring-security.version>5.1.6.RELEASE</spring-security.version>
+		<thymeleaf-spring5.version>3.0.11.RELEASE</thymeleaf-spring5.version>
+		<jackson-jaxrs-json-provider.version>2.9.9</jackson-jaxrs-json-provider.version>
+		<commons-fileupload.version>1.4</commons-fileupload.version>
+		<freemarker.version>2.3.29</freemarker.version>
+		<hikaricp.version>3.3.1</hikaricp.version>
+		<hsqldb.version>2.5.0</hsqldb.version>
 		<nexu.version>1.22</nexu.version>
 
 		<junit.version>4.12</junit.version>
@@ -72,6 +81,11 @@
 			<name>GNU Lesser General Public License</name>
 			<url>https://www.gnu.org/licenses/lgpl-2.1.html</url>
 		</license>
+		<license>
+			<comments>If your project is including the module 'sscd-mocca-adapter', it inherits the MOCCA license</comments>
+			<name>EUPL v1.1</name>
+			<url>https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12</url>
+		</license>
 	</licenses>
 
 	<modules>
@@ -79,7 +93,8 @@
 		<module>dss-standalone-app</module>
 		<module>dss-standalone-app-package</module>
 		<module>dss-demo-webapp</module>
-		<module>dss-demo-bundle</module>
+		<module>dss-demo-bundle</module>        
+		<module>sscd-mocca-adapter</module>
 		<module>dss-rest-doc-generation</module>
 	</modules>
 
@@ -95,34 +110,25 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M2</version>
 				<executions>
 					<execution>
-						<id>prepare-unit-test-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
+						<id>enforce</id>
+				        <goals>
+							<goal>enforce</goal>
 						</goals>
-					</execution>
-					<execution>
-						<id>generate-unit-test-report</id>
-						<goals>
-							<goal>merge</goal>
-							<goal>report</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>prepare-integration-test-agent</id>
-						<goals>
-							<goal>prepare-agent-integration</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generate-integration-test-report</id>
-						<goals>
-							<goal>merge</goal>
-							<goal>report-integration</goal>
-						</goals>
+						<configuration>
+							<rules>
+                				<banDuplicatePomDependencyVersions />
+								<bannedDependencies>
+									<excludes>
+										<exclude>xalan:xalan</exclude>
+									</excludes>
+								</bannedDependencies>
+							</rules>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -137,10 +143,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
 		</plugins>
 
@@ -204,23 +206,18 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.0.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.8.2</version>
 				</plugin>
 				<plugin>
-    				<groupId>org.apache.tomcat.maven</groupId>
-    				<artifactId>tomcat8-maven-plugin</artifactId>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat8-maven-plugin</artifactId>
     				<version>3.0-r1756463</version>
 				</plugin>
 				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.1</version>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.22.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -256,6 +253,11 @@
 				<artifactId>dss-standalone-app-package</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+                <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+                <artifactId>sscd-mocca-adapter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
 			<!-- DSS Framework dependencies -->
 			
@@ -286,17 +288,27 @@
 			</dependency>
 			<dependency>
 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-remote-services</artifactId>
+				<artifactId>dss-signature-remote</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-rest</artifactId>
+				<artifactId>dss-signature-rest</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-soap</artifactId>
+				<artifactId>dss-signature-rest-client</artifactId>
+				<version>${dss.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-soap</artifactId>
+				<version>${dss.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-signature-soap-client</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
@@ -306,7 +318,27 @@
 			</dependency>
 			<dependency>
 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-validation-rest-client</artifactId>
+				<version>${dss.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-validation-soap</artifactId>
+				<version>${dss.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-rest</artifactId>
+				<version>${dss.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-rest-client</artifactId>
+				<version>${dss.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-certificate-validation-soap</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 			<dependency>
@@ -321,11 +353,16 @@
 			</dependency>
 			<dependency>
 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-server-signing-rest-client</artifactId>
+				<version>${dss.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-validation</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 <!-- 			<dependency> -->
-<!-- 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 				<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
 <!-- 				<artifactId>dss-utils-apache-commons</artifactId> -->
 <!-- 				<version>${dss.framework.version}</version> -->
 <!-- 			</dependency> -->
@@ -334,8 +371,9 @@
 				<artifactId>dss-utils-google-guava</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
+			
 <!-- 			<dependency> -->
-<!-- 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 				<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
 <!-- 				<artifactId>dss-crl-parser-x509crl</artifactId> -->
 <!-- 				<version>${dss.framework.version}</version> -->
 <!-- 			</dependency> -->
@@ -350,24 +388,20 @@
 				<artifactId>dss-pades-pdfbox</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
-<!-- alisdev	<dependency> -->
-<!-- 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId> -->
-<!-- 				<artifactId>dss-pades-openpdf</artifactId> -->
-<!-- 				<version>${dss.framework.version}</version> -->
-<!-- 			</dependency> -->
 			<dependency>
 				<groupId>cz.alis.forked.eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pades-openpdf</artifactId>
+				<version>${dss.framework.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-cookbook</artifactId>
 				<version>${dss.framework.version}</version>
 			</dependency>
 
 			<!-- Public Dependencies -->
 
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
@@ -406,6 +440,17 @@
 			</dependency>
 			
 			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload.version}</version>
+			</dependency>		
+			<dependency>
+			    <groupId>org.freemarker</groupId>
+			    <artifactId>freemarker</artifactId>
+			    <version>${freemarker.version}</version>
+			</dependency>
+			
+			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-jaxws</artifactId>
 				<version>${cxf.version}</version>
@@ -439,17 +484,22 @@
 			</dependency>	
 
 			<dependency>
+				<groupId>com.zaxxer</groupId>
+				<artifactId>HikariCP</artifactId>
+				<version>${hikaricp.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
 				<version>${hsqldb.version}</version>
 			</dependency>
-			
-			<dependency>
-			    <groupId>org.thymeleaf</groupId>
-			    <artifactId>thymeleaf-spring4</artifactId>
-			    <version>${thymeleaf-spring4.version}</version>
-			</dependency>
 
+			<dependency>
+				<groupId>org.thymeleaf</groupId>
+				<artifactId>thymeleaf-spring5</artifactId>
+				<version>${thymeleaf-spring5.version}</version>
+			</dependency>
+				
 			<!-- Logger -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -460,6 +510,7 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>jul-to-slf4j</artifactId> <!-- Replaces java.util.Logging (see http://www.slf4j.org/images/legacy.png) -->
 				<version>${slf4j.version}</version>
+				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -561,7 +612,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>3.2.1</version>
+						<version>5.1.1</version>
 						<executions>
 							<execution>
 								<goals>
