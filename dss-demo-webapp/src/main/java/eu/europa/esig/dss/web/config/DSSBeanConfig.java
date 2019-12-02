@@ -187,6 +187,10 @@ public class DSSBeanConfig {
 
 		// Default configs
 		certificateVerifier.setExceptionOnMissingRevocationData(false); // alisdev
+		certificateVerifier.setExceptionOnInvalidTimestamp(false);
+		certificateVerifier.setExceptionOnUncoveredPOE(false);
+		certificateVerifier.setExceptionOnNoRevocationAfterBestSignatureTime(false);
+		certificateVerifier.setExceptionOnRevokedCertificate(false);
 		certificateVerifier.setCheckRevocationForUntrustedChains(false);
 
 		return certificateVerifier;

@@ -19,6 +19,9 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<excludes>
+					<exclude>logback.xml</exclude>
+				</excludes>
 			</resource>
 		</resources>
 		<plugins>
@@ -409,12 +412,40 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
 		</dependency>
+		
+			<!-- JDK9+ : JAXB -->
+			<dependency>
+			    <groupId>javax.xml.bind</groupId>
+			    <artifactId>jaxb-api</artifactId>
+			</dependency>
+			<dependency>
+			    <groupId>com.sun.xml.bind</groupId>
+			    <artifactId>jaxb-core</artifactId>
+			</dependency>
+			<dependency>
+			    <groupId>com.sun.xml.bind</groupId>
+			    <artifactId>jaxb-impl</artifactId>
+			</dependency>
+			
+			<!-- JDK9+ : activation -->
+			<dependency>
+			    <groupId>com.sun.activation</groupId>
+			    <artifactId>javax.activation</artifactId>
+			</dependency>
+		
+			<!-- JDK9+ : jax-ws (http://openjdk.java.net/jeps/320#Java-EE-modules) -->
+			<dependency>
+			  <groupId>javax.xml.ws</groupId>
+			  <artifactId>jaxws-api</artifactId>
+			</dependency>
+
 	</dependencies>
 
 	<profiles>

@@ -59,7 +59,7 @@
 		<dss.framework.version>5.5</dss.framework.version>
 		<dss.framework.root.directory>${project.parent.basedir}/../dss</dss.framework.root.directory>
 
-		<slf4j.version>1.7.28</slf4j.version>
+		<slf4j.version>1.7.29</slf4j.version>
 		<logback-classic.version>1.2.3</logback-classic.version>
 
 		<cxf.version>3.3.3</cxf.version>
@@ -72,7 +72,12 @@
 		<hikaricp.version>3.3.1</hikaricp.version>
 		<hsqldb.version>2.5.0</hsqldb.version>
 		<nexu.version>1.22</nexu.version>
-
+		
+		<!-- JDK9+ -->
+		<jaxb.version>2.3.0</jaxb.version>
+		<jaxws-api.version>2.3.1</jaxws-api.version>
+		<activation.version>1.2.0</activation.version>
+		
 		<junit.version>4.12</junit.version>
 	</properties>
 
@@ -499,7 +504,38 @@
 				<artifactId>thymeleaf-spring5</artifactId>
 				<version>${thymeleaf-spring5.version}</version>
 			</dependency>
-				
+			
+			<!-- JDK9+ : JAXB -->
+			<dependency>
+			    <groupId>javax.xml.bind</groupId>
+			    <artifactId>jaxb-api</artifactId>
+			    <version>${jaxb.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>com.sun.xml.bind</groupId>
+			    <artifactId>jaxb-core</artifactId>
+			    <version>${jaxb.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>com.sun.xml.bind</groupId>
+			    <artifactId>jaxb-impl</artifactId>
+			    <version>${jaxb.version}</version>
+			</dependency>
+			
+			<!-- JDK9+ : activation -->
+			<dependency>
+			    <groupId>com.sun.activation</groupId>
+			    <artifactId>javax.activation</artifactId>
+			    <version>${activation.version}</version>
+			</dependency>
+		
+			<!-- JDK9+ : jax-ws (http://openjdk.java.net/jeps/320#Java-EE-modules) -->
+			<dependency>
+			  <groupId>javax.xml.ws</groupId>
+			  <artifactId>jaxws-api</artifactId>
+			  <version>${jaxws-api.version}</version>
+			</dependency>
+
 			<!-- Logger -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
