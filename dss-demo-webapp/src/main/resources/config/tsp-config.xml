@@ -19,5 +19,8 @@
 		<property name="token" ref="tsa-token" />
 		<property name="alias" value="self-signed-tsa" />
 	</bean>
+<!-- 
+	<bean id="tspSource" class="eu.europa.esig.dss.x509.tsp.AlisTSPSource" />
+ -->
 
 </beans>
