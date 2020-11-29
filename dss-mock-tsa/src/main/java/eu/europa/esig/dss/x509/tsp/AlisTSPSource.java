@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 public class AlisTSPSource implements TSPSource {
@@ -35,7 +36,7 @@ public class AlisTSPSource implements TSPSource {
 	private final Logger LOG = LoggerFactory.getLogger(AlisTSPSource.class);
 
 	@Override
-	public TimeStampToken getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest) {
+	public TimestampBinary getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest) {
 		try {
 			TimeStampRequestGenerator requestGenerator = new TimeStampRequestGenerator();
 			requestGenerator.setCertReq(true);
@@ -86,7 +87,7 @@ public class AlisTSPSource implements TSPSource {
 			InputStream inputStream = connection.getInputStream();
 			TimeStampResponse response = new TimeStampResponse(inputStream);
 			response.validate(request);
-			return response.getTimeStampToken();
+			return new TimestampBinary(response.getTimeStampToken().getEncoded());
 		} catch (Exception e) {
 			throw new DSSException("Unable to generate a timestamp from the Mock", e);
 		}
