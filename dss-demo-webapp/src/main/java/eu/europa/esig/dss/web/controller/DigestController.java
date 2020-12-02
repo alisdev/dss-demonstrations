@@ -55,28 +55,39 @@ public class DigestController {
 
 	private static final String SIGN_DIGEST = "signature-digest";
 	private static final String SIGNATURE_PROCESS = "nexu-signature-process";
+	
+	private static final String[] ALLOWED_FIELDS = { "signatureForm", "digestAlgorithm", "digestToSign", "documentName", "fileToCompute", 
+			"signatureLevel", "signWithExpiredCertificate" };
 
 	@Value("${nexuUrl}")
 	private String nexuUrl;
 
 	@Value("${nexuDownloadUrl}")
 	private String downloadNexuUrl;
+	
+    @Value("${default.digest.algo}")
+    private String defaultDigestAlgo;
 
 	@Autowired
 	private SigningService signingService;
 
 	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(SignatureForm.class, new EnumPropertyEditor(SignatureForm.class));
-		binder.registerCustomEditor(SignatureLevel.class, new EnumPropertyEditor(SignatureLevel.class));
-		binder.registerCustomEditor(DigestAlgorithm.class, new EnumPropertyEditor(DigestAlgorithm.class));
-		binder.registerCustomEditor(EncryptionAlgorithm.class, new EnumPropertyEditor(EncryptionAlgorithm.class));
+	public void initBinder(WebDataBinder webDataBinder) {
+		webDataBinder.registerCustomEditor(SignatureForm.class, new EnumPropertyEditor(SignatureForm.class));
+		webDataBinder.registerCustomEditor(SignatureLevel.class, new EnumPropertyEditor(SignatureLevel.class));
+		webDataBinder.registerCustomEditor(DigestAlgorithm.class, new EnumPropertyEditor(DigestAlgorithm.class));
+		webDataBinder.registerCustomEditor(EncryptionAlgorithm.class, new EnumPropertyEditor(EncryptionAlgorithm.class));
+	}
+	
+	@InitBinder
+	public void setAllowedFields(WebDataBinder webDataBinder) {
+		webDataBinder.setAllowedFields(ALLOWED_FIELDS);
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showSignatureParameters(Model model, HttpServletRequest request) {
 		SignatureDigestForm signatureDigestForm = new SignatureDigestForm();
-		signatureDigestForm.setDigestAlgorithm(DigestAlgorithm.SHA256);
+        signatureDigestForm.setDigestAlgorithm(DigestAlgorithm.forName(defaultDigestAlgo, DigestAlgorithm.SHA256));
 		model.addAttribute("signatureDigestForm", signatureDigestForm);
 		model.addAttribute("downloadNexuUrl", downloadNexuUrl);
 		return SIGN_DIGEST;

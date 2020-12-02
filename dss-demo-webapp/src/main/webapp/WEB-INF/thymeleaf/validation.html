@@ -22,6 +22,7 @@
 					<div th:replace="fragment/fields::field-certificate-tokens"></div>
 					<div th:replace="fragment/fields::field-timestamp-tokens"></div>
 					<div th:replace="fragment/fields::field-revocation-data-tokens"></div>
+					<div th:replace="fragment/fields::field-semantics"></div>
                 </div>
             </div>
 
@@ -30,6 +31,7 @@
 	</div>
 	<div layout:fragment="scripts">
         <script type="text/javascript" th:src="@{/scripts/jsOriginalFilesProvider.js}"></script>
+        <script type="text/javascript" th:src="@{/scripts/jsCryptoSupportAlert.js}"></script>
 	</div>
 </body>
 </html>

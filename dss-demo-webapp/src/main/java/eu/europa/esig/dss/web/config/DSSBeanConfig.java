@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -31,6 +33,7 @@ import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
+import eu.europa.esig.dss.service.http.commons.SSLCertificateLoader;
 import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
@@ -133,6 +136,14 @@ public class DSSBeanConfig {
 		dataLoader.setProxyConfig(proxyConfig);
 		return dataLoader;
 	}
+	
+	@Bean
+    public CommonsDataLoader trustAllDataLoader() {
+        CommonsDataLoader dataLoader = new CommonsDataLoader();
+		dataLoader.setProxyConfig(proxyConfig);
+		dataLoader.setTrustStrategy(TrustAllStrategy.INSTANCE);
+        return dataLoader;
+    }
 
 	@Bean
 	public OCSPDataLoader ocspDataLoader() {
@@ -197,10 +208,10 @@ public class DSSBeanConfig {
 
 		// Default configs
 		certificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert()); // alisdev
-		certificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
-		certificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
-		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert());
-		certificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
+		certificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert()); // alisdev
+		certificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert()); // alisdev
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert()); // alisdev
+		certificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert()); // alisdev
 		certificateVerifier.setCheckRevocationForUntrustedChains(false);
 
 		return certificateVerifier;
@@ -321,11 +332,11 @@ public class DSSBeanConfig {
 
 	@Bean
 	public DSSFileLoader onlineLoader() {
-		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader();
-		offlineFileLoader.setCacheExpirationTime(0);
-		offlineFileLoader.setDataLoader(dataLoader());
-		offlineFileLoader.setFileCacheDirectory(tlCacheDirectory());
-		return offlineFileLoader;
+		FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader();
+		onlineFileLoader.setCacheExpirationTime(0);
+		onlineFileLoader.setDataLoader(dataLoader());
+		onlineFileLoader.setFileCacheDirectory(tlCacheDirectory());
+		return onlineFileLoader;
 	}
 
 	@Bean(name = "european-lotl-source")
@@ -356,5 +367,14 @@ public class DSSBeanConfig {
 		}
 		return tslCache;
 	}
+	
+    /* QWAC Validation */
+
+    @Bean
+    public SSLCertificateLoader sslCertificateLoader() {
+        SSLCertificateLoader sslCertificateLoader = new SSLCertificateLoader();
+        sslCertificateLoader.setCommonsDataLoader(trustAllDataLoader());
+        return sslCertificateLoader;
+    }
 
 }

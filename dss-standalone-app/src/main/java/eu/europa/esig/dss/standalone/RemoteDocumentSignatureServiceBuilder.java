@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -82,10 +83,10 @@ public class RemoteDocumentSignatureServiceBuilder {
 		certificateVerifier.setCrlSource(onlineCRLSource());
 		certificateVerifier.setOcspSource(onlineOcspSource());
 		certificateVerifier.setDataLoader(crlDataLoader());
-		certificateVerifier.setTrustedCertSource(tslCertificateSource);
+		certificateVerifier.setTrustedCertSources(tslCertificateSource);
 
 		// Default configs
-		certificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());
+		certificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());  // alisdev
 		certificateVerifier.setCheckRevocationForUntrustedChains(false);
 
 		return certificateVerifier;
