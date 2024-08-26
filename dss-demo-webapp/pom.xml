@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <groupId>cz.alis.forked.sd-dss</groupId>
         <artifactId>dss-demos</artifactId>
         <version>6.1.RC1</version>
     </parent>
@@ -49,7 +49,7 @@
 
         <!-- DSS Core dependencies -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-service</artifactId>
             <exclusions>
                 <exclusion>
@@ -59,31 +59,31 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-tsl-validation</artifactId>
         </dependency>
 
         <!-- Choose your implementation -->
         <!-- 		<dependency> -->
-        <!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+        <!-- 			<groupId>cz.alis.forked.sd-dss</groupId> -->
         <!-- 			<artifactId>dss-utils-apache-commons</artifactId> -->
         <!-- 		</dependency> -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-utils-google-guava</artifactId>
         </dependency>
 
         <!-- Choose your implementation -->
         <!-- 		<dependency> -->
-        <!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+        <!-- 			<groupId>cz.alis.forked.sd-dss</groupId> -->
         <!-- 			<artifactId>dss-crl-parser-x509crl</artifactId> -->
         <!-- 		</dependency> -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-crl-parser-stream</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-signature-soap</artifactId>
             <exclusions>
                 <exclusion>
@@ -93,25 +93,25 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-validation-soap</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-certificate-validation-soap</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-server-signing-soap</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-timestamp-remote-soap</artifactId>
         </dependency>
 
         <!-- Choose your PAdES implementation -->
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-pades-pdfbox</artifactId>
             <exclusions>
                 <exclusion>
@@ -121,12 +121,12 @@
             </exclusions>
         </dependency>
 <!--        <dependency>-->
-<!--            <groupId>eu.europa.ec.joinup.sd-dss</groupId>-->
+<!--            <groupId>cz.alis.forked.sd-dss</groupId>-->
 <!--            <artifactId>dss-pades-openpdf</artifactId>-->
 <!--        </dependency>-->
 
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-signature-rest</artifactId>
             <exclusions>
                 <exclusion>
@@ -136,31 +136,31 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-validation-rest</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-certificate-validation-rest</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-server-signing-rest</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-timestamp-remote-rest</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-token</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-evidence-record-xml</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <groupId>cz.alis.forked.sd-dss</groupId>
             <artifactId>dss-evidence-record-asn1</artifactId>
         </dependency>
 
@@ -319,7 +319,7 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+                                    <groupId>cz.alis.forked.sd-dss</groupId>
                                     <artifactId>dss-standalone-app-package</artifactId>
                                     <classifier>complete-zip</classifier>
                                     <type>zip</type>
@@ -338,7 +338,7 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+                                    <groupId>cz.alis.forked.sd-dss</groupId>
                                     <artifactId>dss-standalone-app-package</artifactId>
                                     <classifier>minimal-zip</classifier>
                                     <type>zip</type>

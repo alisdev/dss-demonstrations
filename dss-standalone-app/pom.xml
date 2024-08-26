@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<groupId>cz.alis.forked.sd-dss</groupId>
 		<artifactId>dss-demos</artifactId>
 		<version>6.1.RC1</version>
 	</parent>
@@ -62,7 +62,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-signature-remote</artifactId>
 			<exclusions>
 				<exclusion>
@@ -76,7 +76,7 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-validation-server-common</artifactId>
 			<exclusions>
 				<exclusion>
@@ -90,7 +90,7 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-service</artifactId>
 			<exclusions>
 				<exclusion>
@@ -101,51 +101,51 @@
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-token</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-tsl-validation</artifactId>
 		</dependency>
 		
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-evidence-record-xml</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-evidence-record-asn1</artifactId>
 		</dependency>
 
 		<!-- Choose your PAdES implementation -->
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-pades-pdfbox</artifactId>
 		</dependency>
 <!-- 		<dependency> -->
-<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<groupId>cz.alis.forked.sd-dss</groupId> -->
 <!-- 			<artifactId>dss-pades-openpdf</artifactId> -->
 <!-- 		</dependency> -->
 		
 		<!-- Choose your implementation -->
 <!-- 		<dependency> -->
-<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<groupId>cz.alis.forked.sd-dss</groupId> -->
 <!-- 			<artifactId>dss-utils-apache-commons</artifactId> -->
 <!-- 		</dependency> -->
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-utils-google-guava</artifactId>
 		</dependency>
 		
 		<!-- Choose your implementation -->
 <!-- 		<dependency> -->
-<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<groupId>cz.alis.forked.sd-dss</groupId> -->
 <!-- 			<artifactId>dss-crl-parser-x509crl</artifactId> -->
 <!-- 		</dependency> -->
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-crl-parser-stream</artifactId>
 		</dependency>
 

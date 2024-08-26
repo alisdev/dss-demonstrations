@@ -3,7 +3,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+	<groupId>cz.alis.forked.sd-dss</groupId>
 	<artifactId>dss-demos</artifactId>
 	<version>6.1.RC1</version>
 	<packaging>pom</packaging>
@@ -217,18 +217,18 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.sd-dss</groupId>
 				<artifactId>dss-demo-webapp</artifactId>
 				<type>war</type>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.sd-dss</groupId>
 				<artifactId>dss-standalone-app</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.sd-dss</groupId>
 				<artifactId>dss-standalone-app-package</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -236,7 +236,7 @@
 			<!-- DSS Framework dependencies -->
 
 			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<groupId>cz.alis.forked.sd-dss</groupId>
 				<artifactId>dss-bom</artifactId>
 				<version>${dss.framework.version}</version>
 				<type>pom</type>

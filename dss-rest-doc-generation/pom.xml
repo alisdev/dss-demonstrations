@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+		<groupId>cz.alis.forked.sd-dss</groupId>
 		<artifactId>dss-demos</artifactId>
 		<version>6.1.RC1</version>
 	</parent>
@@ -14,47 +14,47 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-utils-google-guava</artifactId>
 		</dependency>
 	
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>				
+			<groupId>cz.alis.forked.sd-dss</groupId>				
 			<artifactId>dss-common-remote-converter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-signature-rest-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-validation-rest-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-certificate-validation-rest-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-server-signing-rest-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-timestamp-remote-rest-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-spi</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<groupId>cz.alis.forked.sd-dss</groupId>
 			<artifactId>dss-token</artifactId>
 			<scope>test</scope>
 		</dependency>
