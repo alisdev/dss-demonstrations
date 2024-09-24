@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>cz.alis.forked.sd-dss</groupId>
 		<artifactId>dss-demos</artifactId>
-		<version>6.1.RC1</version>
+		<version>6.1</version>
 	</parent>
 
 	<name>DSS REST Doc generation</name>
