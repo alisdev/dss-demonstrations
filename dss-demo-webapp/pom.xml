@@ -305,6 +305,19 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>3.3.3</version>
+                <!-- ALISDEV BEGIN - Konfigurace springbootu - nevytvatrel se samospustitelny JAR -->
+                <configuration>
+                    <mainClass>eu.europa.esig.dss.web.DssDemoApplication</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <!-- ALISDEV END -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

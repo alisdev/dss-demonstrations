@@ -43,7 +43,7 @@
 		</dependencySet>
 		<dependencySet>
 			<includes>
-				<include>eu.europa.ec.joinup.sd-dss:dss-demo-webapp:war</include>
+				<include>cz.alis.forked.sd-dss:dss-demo-webapp:war</include>
 			</includes>
 			<outputDirectory>${tomcat.root.folder}/webapps</outputDirectory>
 			<!-- Works only if there is one include -->
