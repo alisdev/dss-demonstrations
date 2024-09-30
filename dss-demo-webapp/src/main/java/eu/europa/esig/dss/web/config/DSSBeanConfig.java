@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.web.config;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -316,8 +318,16 @@ public class DSSBeanConfig {
 		certificateVerifier.setTrustedCertSources(trustedListSource(), trustedCertificateSource());
 
 		// Default configs
-		certificateVerifier.setAlertOnMissingRevocationData(new ExceptionOnStatusAlert());
+		certificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert()); // alisdev
 		certificateVerifier.setCheckRevocationForUntrustedChains(false);
+
+		// ALISDEV configs
+		certificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert()); // alisdev
+		certificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert()); // alisdev
+		// alisdev - potlacena kontrola kvuli onlineOcspSource, ktery v pripade problemu zajisti refresh
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert()); // alisdev
+		certificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert()); // alisdev
+		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert()); // alisdev
 
 		return certificateVerifier;
 	}
