@@ -13,6 +13,14 @@
     <packaging>${packaging.type}</packaging>
     <name>DSS Demo: Web Application</name>
     <description>DSS Demo: Web Application</description>
+    <version>6.1-alis.1</version> <!-- ALISDEV -custom versioning -->
+
+    <properties>
+        <skip.copy-standalone-complete>true</skip.copy-standalone-complete> <!-- ALISDEV - skiping -->
+        <skip.copy-standalone-minimal>true</skip.copy-standalone-minimal> <!-- ALISDEV - skiping -->
+        <skip.copy-cookbook>true</skip.copy-cookbook> <!-- ALISDEV - skiping -->
+        <skip.copy-javadoc>true</skip.copy-javadoc> <!-- ALISDEV - skiping -->
+    </properties>
 
     <dependencies>
         <!-- Sprint-Boot dependencies -->
@@ -335,6 +343,7 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
+                            <skip>${skip.copy-standalone-complete}</skip> <!-- ALISDEV - skiping -->
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>cz.alis.forked.sd-dss</groupId>
@@ -354,6 +363,7 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
+                            <skip>${skip.copy-standalone-minimal}</skip> <!-- ALISDEV - skiping -->
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>cz.alis.forked.sd-dss</groupId>
@@ -378,6 +388,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
+                            <skip>${skip.copy-cookbook}</skip> <!-- ALISDEV - skiping -->
                             <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/doc</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
@@ -398,6 +409,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
+                            <skip>${skip.copy-javadoc}</skip> <!-- ALISDEV - skiping -->
                             <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/apidocs</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
