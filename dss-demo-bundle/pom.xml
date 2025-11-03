@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>cz.alis.forked.sd-dss</groupId>
 		<artifactId>dss-demos</artifactId>
-		<version>6.1</version>
+		<version>6.1-alis.1</version> <!-- ALISDEV -custom versioning -->
 	</parent>
 
 	<name>DSS Package: OOTB Web-Application</name>

@@ -6,14 +6,13 @@
     <parent>
         <groupId>cz.alis.forked.sd-dss</groupId>
         <artifactId>dss-demos</artifactId>
-        <version>6.1</version>
+        <version>6.1-alis.1</version> <!-- ALISDEV -custom versioning -->
     </parent>
 
     <artifactId>dss-demo-webapp</artifactId>
     <packaging>${packaging.type}</packaging>
     <name>DSS Demo: Web Application</name>
     <description>DSS Demo: Web Application</description>
-    <version>6.1-alis.1</version> <!-- ALISDEV -custom versioning -->
 
     <properties>
         <skip.copy-standalone-complete>true</skip.copy-standalone-complete> <!-- ALISDEV - skiping -->
