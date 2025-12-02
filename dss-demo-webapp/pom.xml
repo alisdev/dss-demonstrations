@@ -13,7 +13,7 @@
     <packaging>${packaging.type}</packaging>
     <name>DSS Demo: Web Application</name>
     <description>DSS Demo: Web Application</description>
-    <version>6.1-alis.1</version> <!-- ALISDEV -custom versioning -->
+    <version>6.3</version> <!-- ALISDEV -custom versioning -->
 
     <properties>
         <skip.copy-standalone-complete>true</skip.copy-standalone-complete> <!-- ALISDEV - skiping -->
